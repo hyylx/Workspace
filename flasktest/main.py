@@ -10,6 +10,9 @@ def hello():
 def api():
     return jsonify({'test' : 23})
 
+@app.route("/test")
+def api():
+    return jsonify({'message' : "added a great new feature"})
 
 if __name__ == "__main__":
     app.run(debug=True , host='0.0.0.0')
