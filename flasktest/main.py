@@ -8,10 +8,10 @@ def hello():
 
 @app.route("/api")
 def api():
-    return jsonify({'test' : 23})
+    return jsonify({'test' : 20})
 
 @app.route("/test")
-def api():
+def apind():
     return jsonify({'message' : "added a great new feature"})
 
 if __name__ == "__main__":
