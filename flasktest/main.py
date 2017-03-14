@@ -8,7 +8,7 @@ def hello():
 
 @app.route("/api")
 def api():
-    return jsonify({'test' : 20})
+    return jsonify({'test' : 30})
 
 @app.route("/test")
 def apind():
