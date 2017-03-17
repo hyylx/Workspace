@@ -10,7 +10,7 @@ if __name__=='__main__':
     print('Child process will start.')
     p.start()
     p.join()
-    print('Child process end')
+    print('Child process  end')
 
 #if __name__ == "__main__":
 #    app.run(debug=True , host='0.0.0.0')
