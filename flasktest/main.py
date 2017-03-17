@@ -1,19 +1,17 @@
-from flask import Flask, jsonify
-from gw_quppa import QuppaAPI
-app = Flask(__name__)
+from multiprocessing import Process
+import os
 
-@app.route("/")
-def hello():
-    return "Hello World!"
+def run_proc(name):
+    print('Run child process %s (%s)...' % (name, os.getpid()))
 
-@app.route("/api")
-def api():
-    return jsonify({'test' : 70})
+if __name__=='__main__':
+    print('Parent process %s.' % os.getpid())
+    p = Process(target=run_proc, args=('test',))
+    print('Child process will start.')
+    p.start()
+    p.join()
+    print('Child process end')
 
-@app.route("/test")
-def apind():
-    return jsonify({'message' : "added a great new feature"})
-
-if __name__ == "__main__":
-    app.run(debug=True , host='0.0.0.0')
+#if __name__ == "__main__":
+#    app.run(debug=True , host='0.0.0.0')
 
