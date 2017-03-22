@@ -1,28 +1,32 @@
-from urllib import request, parse
+import socket
 
-print('Login to weibo.cn...')
-email = input('Email: ')
-passwd = input('Password: ')
-login_data = parse.urlencode([
-    ('username', email),
-    ('password', passwd),
-    ('entry', 'mweibo'),
-    ('client_id', ''),
-    ('savestate', '1'),
-    ('ec', ''),
-    ('pagerefer', 'https://passport.weibo.cn/signin/welcome?entry=mweibo&r=http%3A%2F%2Fm.weibo.cn%2F')
-])
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #创建一个socket
+# AF_INET指定使用IPv4协议  SOCK_STREAM 指定使用面向流的TCP协议
 
-req = request.Request('https://passport.weibo.cn/sso/login')
-req.add_header('Origin', 'https://passport.weibo.cn')
-req.add_header('User-Agent', 'Mozilla/6.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/8.0 Mobile/10A5376e Safari/8536.25')
-req.add_header('Referer', 'https://passport.weibo.cn/signin/login?entry=mweibo&res=wel&wm=3349&r=http%3A%2F%2Fm.weibo.cn%2F')
+s.connect(('www.sina.com.cn',80)) #建立连接
+# 要已知IP地址和端口号（端口号根据什么样的服务是固定的）
 
-with request.urlopen(req, data=login_data.encode('utf-8')) as f:
-    print('Status:', f.status, f.reason)
-    for k, v in f.getheaders():
-        print('%s: %s' % (k, v))
-    print('Data:', f.read().decode('utf-8'))
+s.send(b'GET / HTTP/1.1\r\nHost: www.sina.com.cn\r\nConnection: close\r\n\r\n') #发送数据
+
+# 接收数据
+buffer = [] #buffer缓冲
+while True:
+    d = s.recv(1024)# recv(max)方法 一次最多接收指定的字节数
+    if d:
+        buffer.append(d)
+    else:
+        break
+data = b''.join(buffer)
+
+s.close() #关闭连接
+
+header, html = data.split(b'\r\n\r\n',1) #把HTTP头和网页分离
+print(header.decode('utf-8'))#打印头文件
+
+with open('E:\sina.html','wb') as f:
+    f.write(html)
+
+
 
 #if __name__ == "__main__":
 #    app.run(debug=True , host='0.0.0.0')
