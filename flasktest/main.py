@@ -1,31 +1,28 @@
-from multiprocessing import Process
-import os
+from urllib import request, parse
 
-from xml.parsers.expat import ParserCreate
+print('Login to weibo.cn...')
+email = input('Email: ')
+passwd = input('Password: ')
+login_data = parse.urlencode([
+    ('username', email),
+    ('password', passwd),
+    ('entry', 'mweibo'),
+    ('client_id', ''),
+    ('savestate', '1'),
+    ('ec', ''),
+    ('pagerefer', 'https://passport.weibo.cn/signin/welcome?entry=mweibo&r=http%3A%2F%2Fm.weibo.cn%2F')
+])
 
-class DefaultSaxHandler(object):
-    def start_element(self, name, attrs):
-        print('sax:start_element: %s, attrs: %s' % (name, str(attrs)))
+req = request.Request('https://passport.weibo.cn/sso/login')
+req.add_header('Origin', 'https://passport.weibo.cn')
+req.add_header('User-Agent', 'Mozilla/6.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/8.0 Mobile/10A5376e Safari/8536.25')
+req.add_header('Referer', 'https://passport.weibo.cn/signin/login?entry=mweibo&res=wel&wm=3349&r=http%3A%2F%2Fm.weibo.cn%2F')
 
-    def end_element(self, name):
-        print('sax:end_element: %s' % name)
-
-    def char_data(self, text):
-        print('sax:char_data: %s' % text)
-
-xml = r'''<?xml version="1.0"?>
-<ol>
-    <li><a href="/python">Python</a></li>
-    <li><a href="/ruby">Ruby</a></li>
-</ol>
-'''
-
-handler = DefaultSaxHandler()
-parser = ParserCreate()
-parser.StartElementHandler = handler.start_element
-parser.EndElementHandler = handler.end_element
-parser.CharacterDataHandler = handler.char_data
-parser.Parse(xml)
+with request.urlopen(req, data=login_data.encode('utf-8')) as f:
+    print('Status:', f.status, f.reason)
+    for k, v in f.getheaders():
+        print('%s: %s' % (k, v))
+    print('Data:', f.read().decode('utf-8'))
 
 #if __name__ == "__main__":
 #    app.run(debug=True , host='0.0.0.0')
