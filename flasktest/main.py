@@ -1,32 +1,20 @@
-import socket
+from email.mime.text import MIMEText
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #创建一个socket
-# AF_INET指定使用IPv4协议  SOCK_STREAM 指定使用面向流的TCP协议
+msg = MIMEText('hello!','plain', 'utf-8')
+# 构造MIMEText对象时，第一个参数是邮件正文，第二个参数是MIME的subtype('plain'表示纯文本，utf-8保证多语言兼容性)
 
-s.connect(('www.sina.com.cn',80)) #建立连接
-# 要已知IP地址和端口号（端口号根据什么样的服务是固定的）
+from_addr = input('from: ')
+password = input('Password: ')
+to_addr = input('To: ')
 
-s.send(b'GET / HTTP/1.1\r\nHost: www.sina.com.cn\r\nConnection: close\r\n\r\n') #发送数据
+smtp_server = input('SMTP server: ')
 
-# 接收数据
-buffer = [] #buffer缓冲
-while True:
-    d = s.recv(1024)# recv(max)方法 一次最多接收指定的字节数
-    if d:
-        buffer.append(d)
-    else:
-        break
-data = b''.join(buffer)
-
-s.close() #关闭连接
-
-header, html = data.split(b'\r\n\r\n',1) #把HTTP头和网页分离
-print(header.decode('utf-8'))#打印头文件
-
-with open('E:\sina.html','wb') as f:
-    f.write(html)
-
-
+import smtplib
+server = smtplib.SMTP(smtp_server,25)#默认端口25
+server.set_debuglevel(1)# 打印出和SMTP服务器交互的所有信息
+server.login(from_addr, password)
+server.sendmail(from_addr,[to_addr],msg.as_string())#收件人是一个list因为可以一次发给多个人| 邮件正文要是str
+server.quit()
 
 #if __name__ == "__main__":
 #    app.run(debug=True , host='0.0.0.0')
