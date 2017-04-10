@@ -17,11 +17,11 @@ def signin_form():
 
 @app.route('/signin', methods=['POST'])
 def signin():
-    if request.form['username']=='xin' and request.form['password']=='password':
+    if request.form['username']=='xin' and request.form['password']=='12345':
         return '<h3>Hello!</h3>'
     else:
         return '<h3>No!</h3>'
 
 if __name__ == "__main__":
-    app.run()#debug=True , host='0.0.0.0')
+    app.run()
 
