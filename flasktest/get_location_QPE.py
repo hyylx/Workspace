@@ -7,4 +7,4 @@ while time_count < 5:
         data = f.read()
         print('Data:', data.decode('utf-8'))
     time_count += 1
-    time.sleep(2)
+    time.sleep(3)
