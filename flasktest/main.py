@@ -1,11 +1,16 @@
 from flask import Flask
 from flask import request
+from gw_quppa import VTECQuppa
 
+
+Qtag = VTECQuppa()
 app = Flask(__name__)
+
 
 @app.route('/',methods=['GET','POST'])
 def home():
-    return '<h1>Home</h1>'
+    return '<h1>Home</h1> ' \
+           '<p>Getting Location ' + str(Qtag.get_location()) + ' for ' + str(Qtag.get_tag_message()) + '</p>'
 
 @app.route('/signin', methods=['GET'])
 def signin_form():
@@ -23,5 +28,5 @@ def signin():
         return '<h3>No!</h3>'
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
 

@@ -14,7 +14,7 @@ class VTECQuuppa(object):
     """
     your comment here
     """
-    def __init__(self, ip='192.168.0.103'):
+    def __init__(self, ip='192.168.0.129'):
         self.ip = ip
         self.tag_id = None
 
@@ -60,7 +60,10 @@ class VTECQuuppa(object):
         get the battery voltage
         return: float battery voltage
         """
-        data = self.read_quuppa_tagposition()
+        data = self.read_quuppa_taginfo()
+        data_str = data.decode()
+        data_dic = json.loads(data_str)
+        return data_dic['tags'][0]['batteryVoltage']
 
     def get_status(self):
         if self.get_battery_voltage():
@@ -77,5 +80,5 @@ class VTECQuuppa(object):
 
 if __name__ == "__main__":
     test_quppa = VTECQuuppa()
-    tag_message = test_quppa.read_quuppa_taginfo()
+    tag_message = test_quppa.get_battery_voltage()
     print(tag_message)
